@@ -1,0 +1,111 @@
+GIT
+  remote: https://github.com/../../camping/camping.git
+  revision: acba4fad5cb222abbcfe58dde254439b35718a9c
+  branch: camping-3
+  specs:
+    camping (3.0.0)
+      kdl (~> 1.0, >= 1.0.3)
+      mab (~> 0.0, >= 0.0.3)
+      rack (~> 3.0, >= 3.0.4.1)
+      rack-session (~> 2.0, >= 2.0.0)
+      rackup (~> 2.1.0)
+
+GIT
+  remote: https://github.com/joeldrapper/green_dots
+  revision: 9e02b977ba9596daac168bf8911734b1708a52d8
+  specs:
+    green_dots (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    async (2.3.1)
+      console (~> 1.10)
+      io-event (~> 1.1)
+      timers (~> 4.1)
+    async-container (0.16.12)
+      async
+      async-io
+    async-http (0.60.1)
+      async (>= 1.25)
+      async-io (>= 1.28)
+      async-pool (>= 0.2)
+      protocol-http (~> 0.24.0)
+      protocol-http1 (~> 0.15.0)
+      protocol-http2 (~> 0.15.0)
+      traces (>= 0.8.0)
+    async-http-cache (0.4.3)
+      async-http (~> 0.56)
+    async-io (1.34.3)
+      async
+    async-pool (0.3.12)
+      async (>= 1.25)
+    build-environment (1.13.0)
+    console (1.16.2)
+      fiber-local
+    falcon (0.42.3)
+      async
+      async-container (~> 0.16.0)
+      async-http (~> 0.57)
+      async-http-cache (~> 0.4.0)
+      async-io (~> 1.22)
+      build-environment (~> 1.13)
+      bundler
+      localhost (~> 1.1)
+      openssl (~> 3.0)
+      process-metrics (~> 0.2.0)
+      protocol-rack (~> 0.1)
+      samovar (~> 2.1)
+    fiber-local (1.0.0)
+    io-event (1.1.6)
+    kdl (1.0.3)
+      simpleidn (~> 0.2.1)
+    localhost (1.1.10)
+    mab (0.0.3)
+    mapping (1.1.1)
+    openssl (3.1.0)
+    process-metrics (0.2.1)
+      console (~> 1.8)
+      samovar (~> 2.1)
+    protocol-hpack (1.4.2)
+    protocol-http (0.24.1)
+    protocol-http1 (0.15.0)
+      protocol-http (~> 0.22)
+    protocol-http2 (0.15.1)
+      protocol-hpack (~> 1.4)
+      protocol-http (~> 0.18)
+    protocol-rack (0.2.4)
+      protocol-http (~> 0.23)
+      rack (>= 1.0)
+    rack (3.0.4.1)
+    rack-session (2.0.0)
+      rack (>= 3.0.0)
+    rackup (2.1.0)
+      rack (>= 3)
+      webrick (~> 1.8)
+    roda (3.65.0)
+      rack
+    samovar (2.1.4)
+      console (~> 1.0)
+      mapping (~> 1.0)
+    simpleidn (0.2.1)
+      unf (~> 0.1.4)
+    timers (4.3.5)
+    traces (0.8.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.8.2)
+    webrick (1.8.1)
+
+PLATFORMS
+  arm64-darwin-22
+
+DEPENDENCIES
+  camping!
+  falcon
+  green_dots!
+  rackup
+  roda
+
+BUNDLED WITH
+   2.4.7
