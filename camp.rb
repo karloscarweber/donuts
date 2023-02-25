@@ -1,21 +1,13 @@
 require 'camping'
+# maybe camp.rb is where we configure our app, and give it a name.
 
-# I'll probably rethink all of this syntax '
+# Camping.goes makes a new Camping App and names it Donuts.
 Camping.goes :Donuts
-Donuts.pack FrankStyle
+# Then maybe it loads everything in app
 
-module Donuts
-
-    get '/' do
-        "welcome to the whatever"
-    end
-
-    get '/home' do
-        "whatever"
-    end
-
-end
-
+# we can add plugins or middleware directly to Donuts now.
+Donuts.pack Phlex # plugin
+Donuts.use Camping::Middleware::ExtremeSpeed # middleware
 
 # this is old camping stuff that I think we should keep here so I have a quick reference to some of the silliness there.
 

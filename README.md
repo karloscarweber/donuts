@@ -14,7 +14,7 @@ Database:
 	- Extralite
 	- Sequel
 View:
-	- Phlex and Mab (for legacy purposes)
+	- Phlex, Replace Mab with Phlex
 Routing
 	- Roda / Camping (We still might just use Roda underneath)
 Server:
@@ -27,6 +27,7 @@ Frontend:
 	- Alpine or Stimulus
 Asset pipeline:
 	- Vite?
+	- Maybe just rollup.js, which ironically is behind vite.
 	
 # Application Goals:
 - Optionally allow your whole application to fit in a single file. So, Compact, yet clear syntax.
@@ -38,10 +39,10 @@ Asset pipeline:
 Tabs. For accessibility reasons.
 
 
-
 ## Some camping stuff
 I'm rewriting Camping's core as I build this out, basically to match what we decide on.
 
+A note on that: I thought that Camping might be mildly difficult to match some of Roda's succinct syntax for routing and filter type functions, but I was wrong. Camping can do it really well. 
 
 Uninstall Camping then reinstall the local copy:
 

@@ -5,9 +5,10 @@ source 'https://rubygems.org'
 # gem 'puma'
 # gem 'rake'
 # gem 'kdl'
-gem 'camping', github: '../../camping/camping', branch: 'camping-3'
-gem 'roda'
-gem 'rackup'
+gem 'camping', github: 'https://github.com/karloscarweber/camping', branch: 'camping-3'
+gem 'phlex'
+gem 'roda' # maybe don't need this'
+gem 'rackup' # also maybe don't need this, comes with Camping.
 gem 'green_dots', git: 'https://github.com/joeldrapper/green_dots'
 gem 'falcon'
 
