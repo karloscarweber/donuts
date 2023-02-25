@@ -15,21 +15,26 @@ Database:
 - Sqlite
 - Extralite
 - Sequel
+
 View:
-- Phlex, Replace Mab with Phlex
+- Phlex (Replace Mab with Phlex)
+
 Routing
 - Roda / Camping (We still might just use Roda underneath)
+
 Servers:
 - Tipi
 - Falcon
+
 Jobs:
-- Custom job scheudling and operation class
+- Custom job scheduling and operation class
+
 Frontend:
 - LiveView or Turbo
 - Alpine or Stimulus
+
 Asset pipeline:
 - Vite?
-- Maybe just rollup.js, which ironically is behind vite.
 	
 # Application Goals:
 - Optionally allow your whole application to fit in a single file. So, Compact, yet clear syntax.
