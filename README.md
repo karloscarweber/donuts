@@ -5,45 +5,73 @@ This is a pseudo code application directory thing that shows what we WANT the id
 
 We operate by consensus, but also hope to just have fun.
 
-We're using Camping as the base. This means that Camping will need to have large portions rewritten to work the way we want it to. Thankfully Camping is pretty small and this isn't that hard. The only hard requirement for camping is to have a minifed core that fits in that little file. Because it's funny as hell. 
+We're using Camping as the base. This means that Camping will need to have large portions rewritten to work the way we want it to. Thankfully Camping is pretty small and this isn't that hard. The only hard requirement for camping is to have a minifed core that fits in that little file. Because it's funny as hell.
 
+# Development / Experimentation pattern / plan
+I'm going to move Camping's source code into this Repo as I rewrite and rework it. No Bundle installing.gi The idea is to change it into the shape we want as fast as possible. Once we nail a really good interface and have it working the way we want we'll work backward to get the Camping Repo to adopt the newer design.
 
 # Stack Goals:
 Database:
-	- Sqlite
-	- Extralite
-	- Sequel
+- Sqlite
+- Extralite
+- Sequel
 View:
-	- Phlex, Replace Mab with Phlex
+- Phlex, Replace Mab with Phlex
 Routing
-	- Roda / Camping (We still might just use Roda underneath)
-Server:
-	- Tipi
-	- Falcon
+- Roda / Camping (We still might just use Roda underneath)
+Servers:
+- Tipi
+- Falcon
 Jobs:
-	- Custom job scheudling and operation class
+- Custom job scheudling and operation class
 Frontend:
-	- LiveView or Turbo
-	- Alpine or Stimulus
+- LiveView or Turbo
+- Alpine or Stimulus
 Asset pipeline:
-	- Vite?
-	- Maybe just rollup.js, which ironically is behind vite.
+- Vite?
+- Maybe just rollup.js, which ironically is behind vite.
 	
 # Application Goals:
 - Optionally allow your whole application to fit in a single file. So, Compact, yet clear syntax.
 - Very sensible defaults.
 - Simple and inspectible architecture.
 
+# Pages
+What if we had a pages directory of straight up templates that were rendered as static pages. Instead of having empty controllers everywhere. We could even use controller inheritance to casually pass variables to the templates if we wanted to. You know for funsies!
+
+It's just really dumb that throwing up a static page in a dynamic website is so hard, you know?
+
+# Big Tent little Tent
+I keep thinking about how Camping is a Micro-Framework and that's not the goal. But also, every framework is a micro framework. There is a small core that everything is built around. Plugin systems and middleware can make a small framework pretty fully featured real quick. So the goal should be an easily understood, fast, good micro CORE, and make our plugin system so good that we can add anything we need/want very simply.
+
+To clarify, I want very easy to understand and good defaults. The micro-framework is the router, the plugin system, the middleware, and the glue that brings all of that together. I hope we ship a lot of plugins and middleware, like RODA does.
+
+# Some nice defaults/plugins:
+- A user/login/logout/reset password system. Easy to extend if you need to. Simple to understand and extend.
+- Some CSS!!!! Reset and base styles. I hate how every base Rails project looks so bad off the bat. Nothing should be this bad. Especially in 2023. The front end is treated like a jokey javascript playground.
+- Composable and Testable Components. Make it easy to organize, test, and view components as you're working on them. Web Components. Have them in one place.
+- Documentation by default. Drop in a documentation server and ship it with the framework. It should be possible to run a single command, and have a searchable website with all of your site's internal documentation.
+- Make Cryptography easy. Built in and very good libraries for two-party and single party cryptography.
 	
 # TABS vs Spaces
 Tabs. For accessibility reasons.
-
 
 ## Some camping stuff
 I'm rewriting Camping's core as I build this out, basically to match what we decide on.
 
 A note on that: I thought that Camping might be mildly difficult to match some of Roda's succinct syntax for routing and filter type functions, but I was wrong. Camping can do it really well. 
 
+## Problem with Namespacing:
+What has a suffix and what doesn't? In Camping a class is a route, it then implements one of the http methods to respond to a request. Routes can be derived from the name of the Controller: `EditPage` would match `/edit/page`. Additionally you could pile routes into a class and match all requests to that single class: ` class EditPage < R '/silliness', 'another/silly/route'`.
+
+The issue comes when we try to name models. In Rails, for example, Models don't have a prefix or a suffix, but every other main structural piece does though: `IndexView`, `ApplicationController`, `StoreMailer`. It's Controllers that don't have a prefix in Camping. Camping get's around this by placing Helpers, Views, Models, etc... in their own module to namespace them: `Models::User` for example.
+
+Do we want to keep this convention? Should we do something different? I'm not sure.
+
+## index.rb
+I like the html convention that index.html is the defacto root of a webpage. What if we do the same thing with our namespaces for the parts of the framework. `index.rb` could be the root controller, for example. It also makes sense to make `views/index.rb` be the index of the site.
+
+## internal notes
 Uninstall Camping then reinstall the local copy:
 
 ```

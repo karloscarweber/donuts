@@ -1,20 +1,18 @@
 GIT
-  remote: https://github.com/../../camping/camping.git
-  revision: acba4fad5cb222abbcfe58dde254439b35718a9c
-  branch: camping-3
-  specs:
-    camping (3.0.0)
-      kdl (~> 1.0, >= 1.0.3)
-      mab (~> 0.0, >= 0.0.3)
-      rack (~> 3.0, >= 3.0.4.1)
-      rack-session (~> 2.0, >= 2.0.0)
-      rackup (~> 2.1.0)
-
-GIT
   remote: https://github.com/joeldrapper/green_dots
   revision: 9e02b977ba9596daac168bf8911734b1708a52d8
   specs:
     green_dots (0.1.0)
+
+GIT
+  remote: https://github.com/karloscarweber/camping.git
+  revision: acba4fad5cb222abbcfe58dde254439b35718a9c
+  branch: camping-3
+  specs:
+    camping (3.0.0)
+      mab (~> 0.0, >= 0.0.3)
+      rack (~> 3.0, >= 3.0.4.1)
+      rack-session (~> 2.0, >= 2.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -41,6 +39,7 @@ GEM
     async-pool (0.3.12)
       async (>= 1.25)
     build-environment (1.13.0)
+    concurrent-ruby (1.2.2)
     console (1.16.2)
       fiber-local
     falcon (0.42.3)
@@ -64,6 +63,9 @@ GEM
     mab (0.0.3)
     mapping (1.1.1)
     openssl (3.1.0)
+    phlex (1.4.0)
+      concurrent-ruby (~> 1.2)
+      zeitwerk (~> 2.6)
     process-metrics (0.2.1)
       console (~> 1.8)
       samovar (~> 2.1)
@@ -96,6 +98,7 @@ GEM
       unf_ext
     unf_ext (0.0.8.2)
     webrick (1.8.1)
+    zeitwerk (2.6.7)
 
 PLATFORMS
   arm64-darwin-22
@@ -104,6 +107,8 @@ DEPENDENCIES
   camping!
   falcon
   green_dots!
+  kdl
+  phlex
   rackup
   roda
 

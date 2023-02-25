@@ -1,9 +1,14 @@
 require 'camping'
+require_relative 'lib/camping'
 # maybe camp.rb is where we configure our app, and give it a name.
+
+require_relative 'lib/gear/phlex'
+require_relative 'lib/middleware/extremeSpeed'
 
 # Camping.goes makes a new Camping App and names it Donuts.
 Camping.goes :Donuts
 # Then maybe it loads everything in app
+# loads lib after the app? The order that stuff is loaded might be weird.
 
 # we can add plugins or middleware directly to Donuts now.
 Donuts.pack Phlex # plugin
