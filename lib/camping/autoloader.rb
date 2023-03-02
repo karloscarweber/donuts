@@ -16,8 +16,6 @@ require 'zeitwerk'
 # loader.push_dir("#{hop}/models", namespace: Donuts::Models)
 # loader.setup
 
-puts "Autoloader setting up."
-
 module Camping
 	module Autoloader
 		class << self

@@ -7,7 +7,7 @@ module Camping
 	end
 end
 
-require './lib/camping/autoloader'
+require "cam\ping/loads"
 
 # == About camping.rb
 #
@@ -652,6 +652,16 @@ module Camping
       # So, define your catch-all controllers last.
       def D(p, m, e)
         p = '/' if !p || !p[0]
+        
+        puts "#{p}, #{m}"
+        puts "***********"
+        puts "***********"
+        puts "***********"
+        puts "***********"
+        puts "***********"
+        puts "***********"
+        exit
+        
         a=O[:_t].find{|n,_|n==p} and return [I, :serve, *a]
         @r.map { |k|
           k.urls.map { |x|
@@ -719,8 +729,11 @@ module Camping
     # url_prefix. If you're using something other than the built in server, you
     # will need to call routes to set up the routes properly.
     def routes
+	    puts "Routes called"
       X.M prx
-      (Apps.map(&:routes)<<X.v).flatten
+      rs = (Apps.map(&:routes)<<X.v).flatten
+      puts "#{rs}"
+      rs
     end
 
     # prx is an internal method used to return the current app's url_prefix.
@@ -771,6 +784,7 @@ module Camping
     #   #=> #<Blog::Controllers::Info @headers={'HTTP_HOST'=>'wagon'} ...>
     #
     def method_missing(m, c, *a)
+	    puts "method_missing: #{m}, #{a}"
       routes
       h = Hash === a[-1] ? a.pop : {}
       e = H[Rack::MockRequest.env_for('',h.delete(:env)||{})]

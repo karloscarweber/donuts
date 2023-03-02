@@ -233,19 +233,24 @@ module Camping
     #
     def call(env)
       puts "called"
-      @reloader.reload if ENV['environment'] == 'development'
-      @reloader.apps
+      # @reloader.reload if ENV['environment'] == 'development'
+      # @reloader.apps
+      @apps = Camping::Apps
+      
+      # puts "environment:"
+      # puts env
+      # exit
 
       # our switch statement iterates through possible app outcomes, no apps
       # loaded, one app loaded, or multiple apps loaded.
-      case @reloader.apps.length
+      case @apps.length
       when 0
         [200, {'content-type' => 'text/html'}, ["I'm sorry but no apps were found."]]
       when 1
-        @reloader.apps.values.first.call(env) # When we have one
+        @apps.first.call(env) # When we have one
       else
         # 2 and up get special treatment
-        @reloader.apps.each do |name, app|
+        @apps.each do |name, app|
           app.routes.each do |r|
             if (path_matches?(env['PATH_INFO'], r))
               return app.call(env)
@@ -255,7 +260,7 @@ module Camping
         end
 
         # Just return the first app if we didn't find a match.
-        return @reloader.apps.values.first.call(env)
+        return @apps.first.call(env)
       end
     end
 

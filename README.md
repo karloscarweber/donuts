@@ -1,8 +1,17 @@
 # Donuts
 A Pastery Application
 
-This is a pseudo code application directory thing that shows what we WANT the ideal application using our framework to look like, be organized, and conventions used in the framework. It's ephemeral and can be changed. There are no hard decisions or wrong answers yet. 
+This is a pseudo code application directory thing that shows what we WANT the ideal application using our framework to look like, be organized, and conventions used in the framework. It's ephemeral and can be changed. There are no hard decisions or wrong answers yet.
 
+There are 3 main areas
+1. lib -> Literally copied camping into it so we could mess around here without fussing around with another repo yet.
+2. app -> Where the "ideal" app structure would go. 
+3. devnotes -> A folder with notes about how things work, or could work.
+
+The IDEA is to get a prototype working with RACKUP. This Readme will probably eveolve to remove lots of notes and instead become a vision document.
+
+
+# Participate
 We operate by consensus, but also hope to just have fun.
 
 We're using Camping as the base. This means that Camping will need to have large portions rewritten to work the way we want it to. Thankfully Camping is pretty small and this isn't that hard. The only hard requirement for camping is to have a minifed core that fits in that little file. Because it's funny as hell.
@@ -35,6 +44,15 @@ Frontend:
 
 Asset pipeline:
 - Vite?
+
+# BIG IDEAS
+- Be good at making websites! Like for reals. seriously. Capeche.
+- Easy to make things testable and hella fast.
+- Mountains of examples, and online documentation. REALLY WELL DOCUMENTED.
+- These docs need to encompass more than just this framework, or Ruby. But include HTML, CSS, Javascript, deployment, etc... The goal should be developer success with the their goal of making websites.
+- No "best practices" here. There shouldn't be any hard rules on how to do things. That's how _why worked and we should work in a similar fashion. having too much pomp and circumstance feels like it increases barriers to entry.
+- We spell colour and behaviour like this.
+- Beginner friendly. Honestly everything should be focused on helping new developers and juniors.
 	
 # Application Goals:
 - Optionally allow your whole application to fit in a single file. So, Compact, yet clear syntax.

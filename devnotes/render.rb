@@ -1,9 +1,5 @@
 # How does rendering work?
 
-
-
-
-
 # Display a view, calling it by its method name +v+. If a <tt>layout</tt>
 # method is found in Camping::Views, it will be used to wrap the HTML.
 # 
