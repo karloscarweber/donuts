@@ -46,6 +46,8 @@ What if we had a pages directory of straight up templates that were rendered as 
 
 It's just really dumb that throwing up a static page in a dynamic website is so hard, you know?
 
+How this would work? We'd probably need a way to inherit/override templates from the core app, in a cascade kinda way, to populate the pages. The pages are at a variety of urls, we set templates or layouts based on a controller or route. If the page matches one of those routes or controllers, then it inherits the template. Front Matter could be used to overwrite the template/layout.
+
 # Big Tent little Tent
 I keep thinking about how Camping is a Micro-Framework and that's not the goal. But also, every framework is a micro framework. There is a small core that everything is built around. Plugin systems and middleware can make a small framework pretty fully featured real quick. So the goal should be an easily understood, fast, good micro CORE, and make our plugin system so good that we can add anything we need/want very simply.
 
@@ -54,12 +56,27 @@ To clarify, I want very easy to understand and good defaults. The micro-framewor
 # Some nice defaults/plugins:
 - A user/login/logout/reset password system. Easy to extend if you need to. Simple to understand and extend.
 - Some CSS!!!! Reset and base styles. I hate how every base Rails project looks so bad off the bat. Nothing should be this bad. Especially in 2023. The front end is treated like a jokey javascript playground.
-- Composable and Testable Components. Make it easy to organize, test, and view components as you're working on them. Web Components. Have them in one place.
+- Composable and Testable Components. Make it easy to organize, test, and view components as you're working on them. Web Components: Have them in one place.
 - Documentation by default. Drop in a documentation server and ship it with the framework. It should be possible to run a single command, and have a searchable website with all of your site's internal documentation.
 - Make Cryptography easy. Built in and very good libraries for two-party and single party cryptography.
+
+# Streaming services and Websockets
+Make it easy to use and easy to understand. Falcon and Tipi are our Server targets. Why? because they are concurent and stream focused. Samuel Williams has an [excellent talk](https://ruby.social/@joeldrapper/109942394828795458) on the subject.
+
+# Gear (Plugin) based routes, ui, components, etc...
+Camping Gear should be able to add routes to the app, add Styles and Scripts to the app, and interface with the database. A common use case would be a login system that offers login, signup, reset password, logout, sign-in with email. All of that, with some assumption that the `User` Model will be accessed in a certain way, and will have certain methods. Would be great to just: `Donuts.pack Identity` and have all that taken care of.
+
+# Standard hooks and conventions for really common stuff.
+Like that user thing, but really for everything. Make it easy to know the lifecycle of a request. The hooks of Camping, and give any middleware or gear opportunity to overwrite or act upon that.
+
+# Mail?
+How do we do mail in this system? I have no idea.
 	
 # TABS vs Spaces
 Tabs. For accessibility reasons.
+
+# Testing
+Use Green Dots for testing. 
 
 ## Some camping stuff
 I'm rewriting Camping's core as I build this out, basically to match what we decide on.

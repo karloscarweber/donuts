@@ -6,7 +6,7 @@
 module Donuts::Controllers
 	# in this case, < R '/', is rendundant, Camping will convert Index into that.
 	class Index < R '/'
-		layout -> { AppLayout }
+		_layout -> { :app_layout }
 
 		def get()
 			"return a great thing." # returning raw strings is supported

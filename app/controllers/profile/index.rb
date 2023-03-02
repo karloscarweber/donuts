@@ -4,8 +4,8 @@
 # maybe this file is loaded via module_eval into Camping::Controllers?
 
 module Donuts::Controllers
-	class Profile
-		layout -> { AppLayout }
+	class Profile < Camper
+		_layout -> { :app_layout }
 
 		def get()
 			"Return a profile" # returning raw strings is supported

@@ -1,5 +1,5 @@
 # app/views/Home.rb
-class Home < Phlex::HTML
+class HomeLayout < Phlex::HTML
 	def template
 		h1(class: "centered") { yield }
 	end

@@ -1,5 +1,9 @@
 # app/models/user.rb
 
 module Donuts::Models
-	class User < Base end
+	
+	puts "This should work..."
+	
+	# class User < Base
+	# end
 end

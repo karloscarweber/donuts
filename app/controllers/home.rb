@@ -5,13 +5,17 @@
 
 module Donuts::Controllers
 	class Home < R '/home/'
-		layout -> { AppLayout } # Maybe this is implied
+		# include Camper
+		# puts "class:"
+		# puts self.ancestors
+		# exit 
+		_layout -> { :app_layout } # Maybe this is implied
 		
 		# set before actions with a simple instance_method call.
-		before do_something, something_else, more_stuff
+		_before :do_something, :something_else, :more_stuff
 		
 		# add middleware just to this route.
-		middle Camping::Middleware::PerfLogger, 
+		# _middle Camping::Middleware::PerfLogger, 
 		
 		# define response to the routes here.		
 		def get
