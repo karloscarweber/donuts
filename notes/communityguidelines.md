@@ -16,13 +16,17 @@ So the statement to foster and cultivate an anti-racist, diverse, and inclusive 
 - Foster broad inclusion. Endeavour to maintain documentation and communication parity across English, Spanish, and the Japanese languages.
 - Consensus and democratic stewardship.
 - Don't assume consensus from silence.
-- Prioritize the safety and inclusion of under-represtend and oprressed groups.
+- Prioritize the safety and inclusion of under-represented and oprressed groups.
 - Camping has a big tent policy. Nazi's and Fascists are not allowed in the tent. They want to tear the tent down.
+- Dominant or over-represented groups have power, and equity can't be achieved unless that power is ceded to under-represented and oprressed people.
+- We understand that an absence of hiearchy or leadership just means that power is held implicitely by a few, and not explicitely. Strive to expose, flatten, and spread community power.
+- _why was weird, and we can be weird too.
 
 ## Strategies
 - Maintain Documentation parity across 3 languages.
 - Maintain exhaustive documentation and guides to learn, develop, and deploy Camping. Include extensive guides on HTML, CSS, JAVASCRIPT, and other technologies and practices that are needed to build websites.
 - Pay contributors to maintain and improve Camping according to consensus.
-- Prioritize helping folx from under-represented and oppresed groups to contribute to Camping by providing: Support, Code Reviews, Technical direction, and financial compensation.
+- Prioritize helping folx from under-represented and oppressed groups to contribute to Camping by providing: Support, Code Reviews, Technical direction, and financial compensation.
+- Helping new designers and engineers grow their skills and confidence, and to find work if they wish, is a priority. Especially if they are from an under-represented group.
 - Maintain a Macro, Modifiable architecture to give space for anybody to Contribute to Camping without requiring sweeping or broad changes to Camping's core architecture.
 - Foster and cultivate community connections across the industry to find employment and organizations that are safe and equitable for folx to join.
