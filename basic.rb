@@ -2,6 +2,8 @@
 # An attempt to rebuild Camping as a really simple Rack App, while then adding all tha badass Magic stuff to it.
 require 'rackup'
 require_relative 'lib/extensions/snake'
+require_relative 'lib/camping/autoloader'
+require_relative 'lib/camping/preloader'
 
 module Glamp
 	
@@ -19,8 +21,27 @@ module Glamp
 			# Here put a matcher thing that cycles through our Apps and their routes.
 		end
 		
+		class << self
+			# Receives a list of apps from the Camping Object
+			# Then enumerates over and finds every folder and file associated with that App.
+			# Then loads every file in a predictable order.
+			def setup_loaders
+				
+				# add Autoloading for Camping namespaced stuff. Basically things in the root of apps/
+				Camping::Autoloader::Loader.push_dir("#{Dir.pwd}/lib") # unless
+				
+				# Now add autoloading for subfolders in the apps directory, like apps/donuts/
+				Glamp::Apps.each do |app|
+					Camping::Autoloader.with_app(app) unless app.parent != nil
+				end
+				Camping::Autoloader.setup
+			end
+		end
+		
 		def start
-			puts "start called"
+			puts "start called again"
+			# setup loaders
+			Glamp::Server.setup_loaders
 			super
 		end
 		

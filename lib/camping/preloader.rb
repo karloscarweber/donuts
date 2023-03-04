@@ -1,9 +1,9 @@
 # Preloader 
-# All this preloading stuff probably shouldn't be here. We can move it later.
+module Camping end
 class Camping::Preloader
 	
 	class << self
-		def activate()
+		def activate(app=nil)
 			
 			names = [
 				'models',
@@ -18,11 +18,11 @@ class Camping::Preloader
 			# grab all first level ('app/') files and folders
 				# starting with controller, load the file first, then the index.rb if there is one in a folder, then the other things.
 				# iterate through names
-				
+			
 			names.each do |name|
 				puts name
 				recursive_load(name)
-			end
+			end unless app == nil
 			
 		end
 		
@@ -40,12 +40,6 @@ class Camping::Preloader
 			# get all items in this directory!
 			items = Dir.glob("#{nesting}*")
 			directories = DIRS.call(items)
-			
-			# puts "items:"
-			# puts items
-			
-			# puts "directories:"
-			# puts directories
 			
 			# If we are not nested
 			if nested == false

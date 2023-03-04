@@ -18,19 +18,31 @@ require 'zeitwerk'
 
 module Camping
 	module Autoloader
-		class << self
-			def with_app(appname="Camp")
-				hop = "#{__dir__}/app"
-				# puts Zeitwerk::Registry.loaders
-				
-				begin
-					loader = Zeitwerk::Loader.new
-					loader.push_dir("#{hop}/", namespace: appname.to_s)
-					loader.setup
-					loader.eager_load
-					
-				end unless Object.const_defined?(appname.to_sym)
+		
+		Loader ||= Zeitwerk::Loader.new
+		
+		Defined = -> (name, parent) { 
+			if parent != false
+				Object.const_defined?(name.to_s)
+			else
+				return false unless Object.const_defined?(parent)
+				Object.const_defined?(name.to_s)
 			end
+		}
+		
+		class << self
+		
+			def with_app(app, namespace=Object)
+				@@directory ||= Dir.pwd
+				namespaced_name, hop = app.name.gsub(/::/, '/').downcase, 
+				"#{@@directory}/apps"
+				Loader.push_dir("#{hop}", namespace: namespace)
+			end
+			
+			def setup
+				Loader.setup
+			end
+			
 		end
 	end
 end
