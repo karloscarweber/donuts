@@ -89,3 +89,82 @@ class Index < Camper # URL: /pages
 end
 ```
 I'm not even sure how to pull this one off. Maybe the file is executed in a modules context when loaded. and that context delivers a parent URL for the Index. or a prefix. It would be fun to map your applications url structure to the structure of your controllers in that directory.
+
+## Proc/Block based route matching.
+Another approach is to make a Roda type block tree, and even pass a Proc, which is a Module to the matched Routes. Then in your modules you define `to_proc` and `call`. to_proc would just pass the request to the desired method/module/class thing; Whatever it is we want. We would then also have a place to add Before/After Filters, or even custom middleware if we chose.
+```ruby
+
+# Maybe we can set a route using 
+r.on "Foo", &Foos
+
+module Foos
+	def to_proc
+		method(:call).to_proc
+	end
+	
+	def call(request)
+		request.get &Index
+		request.post &Create
+	end
+end
+```
+
+I really like this idea because procs and blocks are fast. This gives us an opportunity to also build our routes/controllers in a pleasant way, give them context and circumstance, and yet still keep things fast.
+
+I really like the idea that we could *"compile"* our routes and controllers into a fast block based routing tree. Sincerely I think this is the way to go.
+
+Namespacing a Camping module into another Camping Module will automatically prefix it's URLs. I think. We might need to use Classes so that we can take advantage of Inheritance.
+```ruby
+Camping.goes :Donuts # make your first Camping app. First app is scoped to '/'
+module Donuts
+	# Routes class or module matches a proc to a URL.
+	Routes.on '/' do
+		"Do something amazing!"
+	end
+	
+	# Controller based routing too!
+	module Controllers
+		class Posts
+			def get
+				"Do something Amazing"
+			end
+		end
+	end
+	
+	Camping.goes :Users
+	module Users::Controllers		
+		class Index < R '/all_users'
+			def get
+				"List all Users"
+			end
+		end
+	end
+	
+end
+
+# List of routes?
+# Routes.list
+#	<Route: @url="/", @proc="&block", @ancestor="Donuts">
+# Maybe have a Route object that gets built up from these 
+
+Camping::Server.start # starts the server, but also compiles the routing tree/list thing.
+Camping.Routes [
+	<Route: @url="/", @proc="&Controllers::", @ancestor="Donuts">
+	<Route: @url="/posts", @proc="&Donuts::Controllers::Posts", @ancestor="Donuts::Controllers">
+	<Route: @url="/users", @proc="&block", @ancestor="Donuts::Users::Controllers::Index">
+]
+
+# The routing tree can then be Flattened into a proc -> 
+module Donuts
+	# Routes class or module matches a proc to a URL.
+	Routes.on '/' do |r|
+		"Do something amazing!"
+		r.on '/posts', &Donuts::Controllers::Posts
+		r.on '/users', &Donuts::Users::Controllers::Index
+	end
+end
+```
+
+My only wonder is if each proc will preserve the context that they are executed. I'm thinking YES, and that calling placing generated `r.on` statements into a proce that's then evaled to create the routing table will give us the results we expect.
+
+Under this method the `Routes` object holds a graph of all routes and controllers set up, then builds the actual routing object using Eval. I also like this because we can make pretty good `Route` objects that hold a lot of Data, and give our introspection tools a lot to work with. Lots of details about how it's working.

@@ -64,3 +64,7 @@ def lookup(n)
     O[:dynamic_templates] ? t : T[k] = t
   end
 end
+
+# Streaming Header stuff
+# 1. Send Headers first
+# 2. Send Body Second.

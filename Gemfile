@@ -10,14 +10,11 @@ gem 'roda' # maybe don't need this'
 gem 'rackup' # also maybe don't need this, comes with Camping.
 gem 'green_dots', git: 'https://github.com/joeldrapper/green_dots'
 # gem 'falcon'
-# gem 'tipi'
+# gem 'tipi''
 
 group :production do
 end
 
-group :development do
+group :development, :test do
+  gem "rerun"
 end
-
-group :test do
-end
-

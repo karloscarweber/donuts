@@ -1,18 +1,14 @@
 # config.ru
-
-# require 'camping'
-# require 'camping/server'
+require 'irb'
+require 'erb'
 
 # I assume we'll use config.ru as a mostly untouched (by users) entry point to their application code.
 # So we'll figure this out later i guess.
 
-# require_relative 'camp'
+# require_relative 'basic'
 
-# require_relative 'lib/camping/server'
-
-# start our app in a Rack Compatible way.
-# run Camping::Server.start
-
-require_relative 'basic'
-
-run Glamp::Server.new
+# Runs the server
+run Glamp::Server
+ARGV.clear
+IRB.start
+exit

@@ -118,3 +118,11 @@ Uninstall Camping then reinstall the local copy:
 bundle exec gem uninstall camping
 bundle update camping
 ```
+
+
+### Development
+use the rerun gem to trigger basic.rb to reload everything.
+```
+rerun ruby basic.rb
+```
+This will load the default server and set everything up appropriately.
