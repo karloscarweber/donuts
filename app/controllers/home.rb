@@ -14,6 +14,10 @@ module Donuts::Controllers
 		# set before actions with a simple instance_method call.
 		_before :do_something, :something_else, :more_stuff
 		
+		_after -> {
+			:ensure_logging
+		}
+		
 		# add middleware just to this route.
 		# _middle Camping::Middleware::PerfLogger, 
 		

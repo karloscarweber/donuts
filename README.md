@@ -6,7 +6,7 @@ This is a pseudo code application directory thing that shows what we WANT the id
 There are 3 main areas
 1. lib -> Literally copied camping into it so we could mess around here without fussing around with another repo yet.
 2. app -> Where the "ideal" app structure would go. 
-3. devnotes -> A folder with notes about how things work, or could work.
+3. notes -> A folder with notes about how things work, or could work.
 
 The IDEA is to get a prototype working with RACKUP. This Readme will probably eveolve to remove lots of notes and instead become a vision document.
 
@@ -26,10 +26,10 @@ Database:
 - Sequel
 
 View:
-- Phlex (Replace Mab with Phlex)
+- Phlex (Replace Mab with Phlex)(Actually MAB and Phlex, but make it easy to just use Phlex. Like all examples should have a toggle between them)
 
 Routing
-- Roda / Camping (We still might just use Roda underneath)
+- ~~Roda / Camping (We still might just use Roda underneath)~~ We're using Camping, with a new routing API, and block based Controller/Route execution.
 
 Servers:
 - Tipi
