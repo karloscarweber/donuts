@@ -64,6 +64,48 @@ module Camping
   Apps = [] # Our array of Apps
   SK = :camping #Key for r.session
   G = [] # Our array of Gear
+	def self.🏕; CampingTools end # add quick access for Camping Tools
+
+  # Structs
+  # Route
+	# A struct representing a routing in Camping.
+	# name: {String} The name of the route. Matches it's class Name
+	# url: {String} The url that it matches.
+	# pattern: {String} The url pattern that it matches.
+	# proc: {Proc} A reference to the procedure that it is executed when this
+	#   route is matched.
+	Route = Struct.new(:name,:url,:pattern,:proc)
+
+	# Metadata
+	# A struct containing an app's metadata.
+	# @name: {String} The app name.
+	# @parent: {Object} The app's parent app, Defaults to Camping.
+	# @root: {String} The app's root url. it's URL Prefix, basically.
+	# @location: {Location}, A struct containing a file name, and line number.
+	Metadata = Struct.new(:name,:parent,:root,:location)
+
+	# Location
+	# A struct containing an app's definition location
+	# @file: {String} The string location and name of the file
+	# @line_number: {String} The line number in that file where the app was made.
+	Location = Struct.new(:file,:line_number)
+
+	def _meta
+		@_meta || nil
+	end
+
+	# 	accepts a hash:
+	#		:file = String
+	#		:line_number = Int
+	#   :parent = Object
+	def _meta=(new_meta)
+		begin
+			loc = Location.new(new_meta[:file], new_meta[:line_number])
+		  root = (new_meta[:parent] ? '/' + Camping::🏕.to_snake(new_meta[:parent].name.dup) : '/' )
+			@_meta = Metadata.new(self.name.to_s, new_meta[:parent], root, loc)
+		end unless @_meta != nil
+		@_meta
+	end
 
   # An object-like Hash.
   # All Camping query string and cookie variables are loaded as this.
@@ -283,7 +325,7 @@ module Camping
 
     T = {}
     L = :layout
-    
+
     # Finds a template, returning either:
     #
     #   false             # => Could not find template
@@ -574,16 +616,16 @@ module Camping
   #     end
   #   end
   module Controllers
-  	
+
   	# The empty controller module
 		module CamperCore
-			
+
 			def self.included(mod)
 				mod.extend(ClassMethods)
 			end
-			
+
 			module ClassMethods
-			
+
 				# a helper to set the layout for the controller
 				def _layout(block)
 					if (lay = block.call).class == Class
@@ -592,22 +634,22 @@ module Camping
 						@_layout = :layout
 					end
 				end
-				
+
 				def _before(*a)
 				end
-				
+
 				def _after(*a)
 				end
-				
+
 				def _middle(*a)
 				end
-				
+
 			end
 		end
 		class Camper
 			include CamperCore
 		end
-  
+
     @r = []
     class << self
 
@@ -652,7 +694,7 @@ module Camping
       # So, define your catch-all controllers last.
       def D(p, m, e)
         p = '/' if !p || !p[0]
-        
+
         puts "#{p}, #{m}"
         puts "***********"
         puts "***********"
@@ -661,7 +703,7 @@ module Camping
         puts "***********"
         puts "***********"
         exit
-        
+
         a=O[:_t].find{|n,_|n==p} and return [I, :serve, *a]
         @r.map { |k|
           k.urls.map { |x|
@@ -711,7 +753,7 @@ module Camping
 
     # Internal controller with no route. Used to show internal messages.
     I = R()
-    
+
   end
   X = Controllers
 
@@ -936,17 +978,20 @@ module Camping
     #   @@ index.erb
     #   Hello <%= @world %>
     #
-    
-    def goes(m, g=TOPLEVEL_BINDING)
-	  mm = m.to_s
-      f = caller[0].split("/").last.split(":")[0]
-      Apps << a = eval(S.gsub(/Camping/,mm), g, f[0], f[1].to_i)
+    def goes(m, g=TOPLEVEL_BINDING, parent=nil, klr=nil)
+	    mm = m.to_s
+	    pg = (parent.name.dup.to_s) << "::" if parent != nil
+			klr = caller unless klr
+			f = klr[0].split('`').first.split(":")
+			fl, ln = f[0], f[1].to_i
+      # f = caller[0].split("/").last.split(":")[0]
+      Apps << a = eval(S.gsub(/Camping/,mm), g, fl, ln)
       # Camping::Autoloader.with_app(mm.to_sym)
       caller[0]=~/:/
       IO.read(a.set:__FILE__,$`)=~/^__END__/ &&
       (b=$'.split(/^@@\s*(.+?)\s*\r?\n/m)).shift rescue nil
       a.set :_t,H[*b||[]]
-      C.configure(a)
+      a._meta = {file: fl, line_number: ln, parent: parent}
     end
   end
 
@@ -1014,11 +1059,11 @@ module Camping
   # Models cannot be referred from Views at this time.
   module Models
     Helpers.send(:include, X, self)
-    
+
     # place an empty base here because we haven't replaced the database stuff yet.'
     module Base
     end
-    
+
   end
 
   autoload :Mab, 'camping/mab'

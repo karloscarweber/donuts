@@ -1,32 +1,13 @@
-require 'irb'
-require 'erb'
-require 'rack'
-require 'rackup'
-require 'camping/version'
-require 'camping/reloader'
-require 'camping/commands'
-
-# == The Camping Server (for development)
-#
-# Camping includes a pretty nifty server which is built for development.
-# It follows these rules:
-#
-# * Load all Camping apps in a file.
-# * Mount those apps according to their name. (e.g. Blog is mounted at /blog.)
-# * Run each app's <tt>create</tt> method upon startup.
-# * Reload the app if its modification time changes.
-# * Reload the app if it requires any files under the same directory and one
-#   of their modification times changes.
-# * Support the X-Sendfile header.
-#
-# Run it like this:
-#
-#   camping blog.rb          # Mounts Blog at /
-#
-# And visit http://localhost:3301/ in your browser.
+# Camping Server stuff first
 module Camping
-  class Server < Rackup::Server
-	  class << self
+
+	# delete this module later. Just here to satisfy autoloading
+	module ServerNew end
+
+	# The Server object, that's just Rackup Server
+	class Server < Rackup::Server
+
+		class << self
 			# Receives a list of apps from the Camping Object
 			# Then enumerates over and finds every folder and file associated with that App.
 			# Then loads every file in a predictable order.
@@ -43,21 +24,7 @@ module Camping
 			end
 		end
 
-    class Options
-
-      # Deprecated v3.0.0
-      # if home = ENV['HOME'] # POSIX
-      #   DB = File.join(home, '.camping.db')
-      #   RC = File.join(home, '.campingrc')
-      # elsif home = ENV['APPDATA'] # MSWIN
-      #   DB = File.join(home, 'Camping.db')
-      #   RC = File.join(home, 'Campingrc')
-      # else
-      #   DB = nil
-      #   RC = nil
-      # end
-      #
-      # HOME = File.expand_path(home) + '/'
+		class Options
 
       def parse!(args)
         args = args.dup
@@ -65,7 +32,7 @@ module Camping
         opt_parser = OptionParser.new("", 24, '  ') do |opts|
           opts.banner = "Usage: camping Or: camping my-camping-app.rb"
 
-          # opts.define_head "#{File.basename($0)}, the microframework ON-button for ruby #{RUBY_VERSION} (#{RUBY_RELEASE_DATE}) [#{RUBY_PLATFORM}]"
+          opts.define_head "#{File.basename($0)}, the microframework ON-button for ruby #{RUBY_VERSION} (#{RUBY_RELEASE_DATE}) [#{RUBY_PLATFORM}]"
 
           opts.separator ""
           opts.separator "Specific options:"
@@ -117,11 +84,12 @@ module Camping
 
     def initialize(*)
       super
-      @reloader = Camping::Reloader.new(options[:script]) do |app|
-        if !app.options.has_key?(:dynamic_templates)
-		      app.options[:dynamic_templates] = true
-	      end
-      end
+      # figure out a new reloader method.
+      # @reloader = Camping::Reloader.new(options[:script]) do |app|
+      #   if !app.options.has_key?(:dynamic_templates)
+		    #   app.options[:dynamic_templates] = true
+	     #  end
+      # end
     end
 
     def opt_parser
@@ -141,37 +109,29 @@ module Camping
     end
 
     def start
-
-      commands = []
+			commands = []
       ARGV.each do |cmd|
         commands << cmd
       end
 
       # Parse commands
-      case commands[0]
-      when "new"
-        Camping::Commands.new_cmd(commands[1])
-        exit
-      end
+      # case commands[0]
+      # when "new"
+      #   Camping::Commands.new_cmd(commands[1])
+      #   exit
+      # end
 
       if options[:version] == true
         puts "Camping v#{Camping::VERSION}"
         exit
       end
 
-      if options[:routes] == true
-        @reloader.reload!
-        r = @reloader
-        eval("self", TOPLEVEL_BINDING).meta_def(:reload!) { r.reload!; nil }
-        ARGV.clear
-        Camping::Commands.routes
-        exit
-      end
-
-      if options[:server] == "console"
-        puts "** Starting console"
-        @reloader.reload!
-        r = @reloader
+			# setup loaders
+			Camping::Server.setup_loaders
+			if options[:server] == "console"
+        puts "🏕  Starting console"
+        # @reloader.reload!
+        # r = @reloader
         eval("self", TOPLEVEL_BINDING).meta_def(:reload!) { r.reload!; nil }
         ARGV.clear
         IRB.start
@@ -183,14 +143,14 @@ module Camping
       #   super
       else
         name = server.name[/\w+$/]
-        puts "** Starting #{name} on #{options[:Host]}:#{options[:Port]}"
+        puts "🏕  Starting #{name} on #{options[:Host]}:#{options[:Port]}"
         super
       end
-    end
+		end
 
-    # defines the public directory to be /public
+	  # defines the public directory to be /public
     def public_dir
-      File.expand_path('../public', @reloader.file)
+      File.expand_path('../public', __FILE__)
     end
 
     # add the public directory as a Rack app serving files first, then the
@@ -218,49 +178,16 @@ module Camping
       return u
     }
 
-    # call(env) res
-    # == How routing works
-    #
-    # The first app added using Camping.goes is set at the root, we walk through
-    # the defined routes of the first app to see if there is a match.
-    # With no match we then walk through every other defined app.
-    # When we reach a matching route we call that app and Camping's router
-    # handles the rest.
-    #
-    # Mounting apps at different directories is now explicit by setting the
-    # url_prefix option:
-    #
-    #   camping.goes :Nuts          # Mounts Nuts at /
-    #   module Auth
-    #      set :url_prefix, "auth/"
-    #   end
-    #   camping.goes :Auth          # Mounts Auth at /auth/
-    #   camping.goes :Blog          # Mounts Blog at /
-    #
-    # Note that routes that you set explicitly with R are not prefixed. This
-    # us explicit control over routes:
-    #
-    #   module Auth::Controllers
-    #      class Whatever < R '/thing/' # Mounts at /thing/
-    #         def get
-    #            render :some_view
-    #         end
-    #      end
-    #   end
-    #
-    def call(env)
-      puts "called"
-      # @reloader.reload if ENV['environment'] == 'development'
-      # @reloader.apps
-      @apps = Camping::Apps
+    # All the magic happens here.
+		def call(env)
 
-      # puts "environment:"
-      # puts env
-      # exit
+			@apps ||= Camping::Apps
+			Camping.routes
 
-      # our switch statement iterates through possible app outcomes, no apps
-      # loaded, one app loaded, or multiple apps loaded.
-      case @apps.length
+			# [200, {}, ["Hello World"]]
+			# Here put a matcher thing that cycles through our Apps and their routes.
+
+			case @apps.length
       when 0
         [200, {'content-type' => 'text/html'}, ["I'm sorry but no apps were found."]]
       when 1
@@ -279,7 +206,8 @@ module Camping
         # Just return the first app if we didn't find a match.
         return @apps.first.call(env)
       end
-    end
+
+		end
 
     class XSendfile
       def initialize(app)
@@ -309,5 +237,6 @@ module Camping
         end
       end
     end
-  end
+
+	end
 end

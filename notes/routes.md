@@ -103,8 +103,20 @@ module Foos
 	end
 	
 	def call(request)
-		request.get &Index
-		request.post &Create
+		_before.call
+		# request.get &Index
+		# request.post &Create
+		
+		# perform route matching here
+		# that_matches is a refinement or extra method on the _routes array.
+		# it will iterate over the routes, finding the one that matches the request,
+		# then issue a to_proc call on it, cache it, then run through call also.
+		# This is what happens on App Modules. or apps. Once we get to a controller
+		# class, AKA `class Post`, or something, the to_proc, and call methods will
+		# directly pass the call the right constructed block.
+		_routes.that_matches(request).call
+		
+		_after.call
 	end
 end
 ```
@@ -170,175 +182,65 @@ My only wonder is if each proc will preserve the context that they are executed.
 
 Under this method the `Routes` object holds a graph of all routes and controllers set up, then builds the actual routing object using Eval. I also like this because we can make pretty good `Route` objects that hold a lot of Data, and give our introspection tools a lot to work with. Lots of details about how it's working.
 
+### About that Proc Stuff
+I've ben thinking about how routing ought to work and the implications of using the to_proc method. I really like it and Camping's Routes should probably work like this underneath. But how exactly?
 
+I know we're making a constructed routing tree through a compilation process, and that we have intermediate Route objects that we're making for each App/Controller/SubApp/Thing. So how do we respect inheritance, and binding actions in a predictable manner?
 
-#### New spec draft: 
-
-Hi Friends!
-
-I've been working on making Camping a bit more capable when building out larger applications, while maintaining a succinct API and the only really good way to do this is to add a couple of interfaces for setting up controllers/routes. So! Here is a new spec for routing in camping:
-
-## Defining Routes
-In Camping you can define routes by calling an `Object` scoped helper method:
+Maybe when we inherit an execution context, as in an App having a controller inside that also has a before block, we are really executing a proxy block that then routes our real request to the method we want to execute?
 ```ruby
-get '/' do
-	"This is a great response that we can just receive."
-end
-```
-
-These methods define a route, or routes, accept a block at the end, and match an HTTP method that corresponds with their method name. Example: `get` matches `GET`, `post` matches `POST`.
-
-Routes defined in this way may also accept parameters, These are passed to the block as named parameters:
-```ruby
-get '/users/:username' do |username|
-	"Welcome to #{username}'s page."
-end
-```
-
-You may be familiar with this method of route definition, it's the way that Sinatra Works.
-
-## Controller Based routing
-With Camping 3  we're introducing a new Class named `Camper` That our Controller Based Routes inherit from. Having no inheritance in Camping made setting up state in our controllers, or adding certain helper methods more complicated than it needed to be. So now we have `Camper`. 
-
-To make controllers in our apps, do the following:
-```ruby
-module Donuts::Controllers
-	class Toot < Camper # matches '/toot' URL.
-    
-		# have a before block executed.
-		_before -> { before_method(); another_before_method() }
-		
-		# have a layout helper to execute a layout for this controller.
-		_layout -> { Donuts::Views::SuperLayout }
-		
-		def get
-			"You got this."
-		end
-		
-		def post(name="",toot="") # matches named parameters name, and toot
-			tooted = Models::Toot.new(name, toot).save
-			Responses::Toot::New.new(tooted) # The New Toot response will read the tooted save result and format itself accordingly.
-		end
-	end
-end
-```
-
-Controllers also give us the advantage of having `_before`, and `_layout` helper instance_methods. Giving us a block to execute before our methods, and for setting up a layout. `_after` is also planned.
-
-## Inheritance based routing
-You can also make a route based on inheriting from a parent class:
-```ruby
-module Donuts::Controllers
-	class Users < Camper # /users
-	end
-	class Account < Users # /users/account
-	end
-end
-```
-
-Inheriting from routes in this manner also passes along the `_before` block and `_layout`. Maybe a strip method could let us strip out some of those options if they are different based on a sub page:
-```ruby
-module Donuts::Controllers
-	class Account < Users # /users/account
-		_strip_layout() # Strips the layout
-		_strip_before :before_method # Strips just that before method.
-	end
-end
-```
-
-## Explicit Routing
-You can also set explicit routes for Camping controllers:
-```ruby
-module Donuts::Controllers
-	# matches /users
-	class Users < R '/users'
-		def get
-			"All the users"
-		end
-	end
-	# matches /account and /users/account
-	class Account < R '/account', '/users/account' 
-		def get
-			"Your account"
-		end
-	end
-end
-```
-
-## Cascading Routes
-Camping 2.3 reintroduced the idea behind multiple apps. I think it's cool as hell. An Advantage to setting up multiple apps is *including* a base app into another app, thus inheriting it's Middleware, before filters, layouts, views, etc... I had an idea that you could also inherit the root route of an inherited app, just like Controllers can inherit from one another. I wanna call this *Cascading Routes*.
-```ruby
-Camping.goes :Donuts # make your first Camping app. First app is scoped to '/'
 module Donuts
-
-	# Routes class or module matches a proc to a URL.
-	# Do this inside of a module to capture it's instance variables and reference
-	# them.
-	get '/' do
-		"Do something amazing!"
-	end
-	
-	# The Donuts' app controller module
+	_before -> { ensure_user }
 	module Controllers
-		class Posts
-			def get # '/posts'
-				"Do something Amazing"
-			end
-		end
-	end
-	
-	Camping.goes :Users # or Donuts.goes :Users
-	# Users app is namespaced into Donuts Module,
-	# Because it *goes* inside of the Donuts module.
-	module Users::Controllers
-		class Index < R '/all_users' # 
+		class Account < Camper
+			_before -> { @account = get_account_data}
 			def get
-				"List all Users"
-			end
-		end
-	
-		# Make an Account app inside of the Users app.
-		# not only namespaced but also a *descendant* or *child* of
-		# The Users app.
-		Users.goes :Account
-		module Account::Controllers
-			class Index < Camper # /users/account because the parent 
-				def get
-					"List all Users"
-				end
+				"Welcome back #{@account.name}."
 			end
 		end
 	end
-
 end
 ```
 
-I also had an idea about folder based routing, but that felt a bit too complicated to implement. Maybe Save that idea to add a generic **pages** folder to your app root that holds, maybe just markdown files, and generates static pages in a camping app without requiring a Route be made somewhere in a controller.
+So in this case both the Donuts before block and the Account before block are executed. How do we prevent that? I think we can solve that in our compile stage. We'll flag that we want to ignore the previous before block, then add our own.
 
-# Camping Named Routes
-Camping also does this really clever thing where the name of a camping controller denotes it's route:
 ```ruby
-module Nuts::Controllers
-	class PostMypostX < Camper # matches /post/mypost/:a_number
+module Donuts
+	_before -> {ensure_user }
+	module Controllers
+		class Account < Camper
+			_fresh_before() # flags that we want to start fresh with our before block
+			_before -> { @account = get_account_data }
+			def get
+				"Welcome back #{@account.name}."
+			end
+		end
 	end
 end
 ```
-I would love to keep this API. for a lot of reasons.
 
-## Flattened Routes
-Now that we have all of this fancy routing stuff. How do we get our routes to fire? Camping has a very simple process. Each *App* that we create is added to a `Camping::Apps` constant, an array, in the Camping Module. Our Camping Server iterates over each app, and checks against a 'urls' array for that app, trying to find a match to the current request. I love this, and I would love to keep it this simple. But in the interest in exposing exactly how Camping's routes work, and to make it much faster, I believe we should Flatten these routes.
-
-Every time a route is created in Camping, We'll now be making a `Route` Struct. it will have a reference to the Block that's executed whent the route runs, the route to be matched, named parameters that are passed, and anything else we can think of. Most importantly it will have a reference to WHERE the route was made and if it overwrites a previously set Route. My hope is that by placing routes into an intermediate object like this, and THEN building a routing tree from it, we'll be able to expose routing to developers in a very verbose way.
-
-Also by making routes in this manner I hope to have plugins that can set their own routes, files, and actions in our camping apps, that can then be overwritten or customized down the line.
-
-Hoping the Routes could look something like this:
+We're going to have controller inheritance and App Nesting. Ideally an inherited controller will have it's before block inherited from it's parent. If we want to add to it without replacing it we run into a problem.
 
 ```ruby
-Camping::Server.start # starts the server, but also compiles the routing tree/list thing.
-Camping.Routes [
-	<Route: @url="/", @proc="&Controllers::", @ancestor="Donuts">
-	<Route: @url="/posts", @proc="&Donuts::Controllers::Posts", @ancestor="Donuts::Controllers">
-	<Route: @url="/users", @proc="&block", @ancestor="Donuts::Users::Controllers::Index">
-]
+class ConnectedApps < R Account
+	_before -> { @apps = get_user_apps } # get_user_apps depends on user data. But where is it? We'll error here.
+	def get
+		request.body = "<ul>"
+		@apps.each { |a| request.body << "<li>#{a.name}<li>" }
+		request.body = "</ul>"
+		request.body
+	end
+end
 ```
+
+Perhaps the solution is to append to the before?
+```ruby
+class ConnectedApps < R Account
+	# appends to the before
+	_append_before -> { @apps = get_user_apps }
+end
+```
+
+This would make a new, compound proc that references the original proc then calls the new one.
+
+What do ya'll think of this?

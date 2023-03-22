@@ -5,7 +5,7 @@ require_relative 'lib/extensions/snake'
 require_relative 'lib/camping/autoloader'
 require_relative 'lib/camping/preloader'
 
-module Glamp
+module Camping
 	
 	Apps = []
 	
@@ -14,7 +14,7 @@ module Glamp
 		
 		# All the magic happens here.
 		def call(env)
-			puts Glamp::Apps
+			puts Camping::Apps
 			
 			[200, {}, ["Hello World"]]
 			
@@ -31,7 +31,7 @@ module Glamp
 				Camping::Autoloader::Loader.push_dir("#{Dir.pwd}/lib") # unless
 				
 				# Now add autoloading for subfolders in the apps directory, like apps/donuts/
-				Glamp::Apps.each do |app|
+				Camping::Apps.each do |app|
 					Camping::Autoloader.with_app(app) unless app.parent != nil
 				end
 				Camping::Autoloader.setup
@@ -41,7 +41,7 @@ module Glamp
 		def start
 			puts "start called again"
 			# setup loaders
-			Glamp::Server.setup_loaders
+			Camping::Server.setup_loaders
 			super
 		end
 		
@@ -53,7 +53,7 @@ module Glamp
 		@_loaded = {}
 		@_root = '/'
 		def goes(m, g=TOPLEVEL_BINDING)
-			Glamp.goes(m, g, self)
+			Camping.goes(m, g, self)
 		end
 		def _set_parent(parent)
 			@_parent = parent
@@ -74,7 +74,7 @@ module Glamp
 	class << self
 	
 		def apps
-			Glamp::Apps
+			Camping::Apps
 		end
 	
 		# Add the classic Camping Goes! Gotta keep the magic alive.
@@ -87,7 +87,7 @@ module Glamp
 			pg = (parent.name.dup.to_s) << "::" if parent != nil
 			f = caller[0].split("/").last.split(":")[0]
 			file, line_number = f[0], f[1]
-    	Apps << a = eval("module #{pg}#{m.to_s}; extend Glamp::App; end", g, file, line_number.to_i)
+    	Apps << a = eval("module #{pg}#{m.to_s}; extend Camping::App; end", g, file, line_number.to_i)
      	a._set_parent(parent) if parent != nil
       
       # extremely naive way to get the parent and root. 
@@ -99,9 +99,9 @@ module Glamp
 	
 end
 
-Glamp.goes :Donuts
-Glamp.goes :Nuts
-Glamp.goes :Wild
+Camping.goes :Donuts
+Camping.goes :Nuts
+Camping.goes :Wild
 Wild.goes :Wilder
 # could also: 
 # module Wild
@@ -110,4 +110,4 @@ Wild.goes :Wilder
 
 # What we should be using to start the server.
 # starts and initializes the server.
-Glamp::Server.start
+Camping::Server.start

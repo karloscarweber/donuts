@@ -5,7 +5,7 @@ This is a pseudo code application directory thing that shows what we WANT the id
 
 There are 3 main areas
 1. lib -> Literally copied camping into it so we could mess around here without fussing around with another repo yet.
-2. app -> Where the "ideal" app structure would go. 
+2. app -> Where the "ideal" app structure would go.
 3. notes -> A folder with notes about how things work, or could work.
 
 The IDEA is to get a prototype working with RACKUP. This Readme will probably eveolve to remove lots of notes and instead become a vision document.
@@ -53,7 +53,7 @@ Asset pipeline:
 - No "best practices" here. There shouldn't be any hard rules on how to do things. That's how _why worked and we should work in a similar fashion. having too much pomp and circumstance feels like it increases barriers to entry.
 - We spell colour and behaviour like this.
 - Beginner friendly. Honestly everything should be focused on helping new developers and juniors.
-	
+
 # Application Goals:
 - Optionally allow your whole application to fit in a single file. So, Compact, yet clear syntax.
 - Very sensible defaults.
@@ -89,17 +89,17 @@ Like that user thing, but really for everything. Make it easy to know the lifecy
 
 # Mail?
 How do we do mail in this system? I have no idea.
-	
+
 # TABS vs Spaces
 Tabs. For accessibility reasons.
 
 # Testing
-Use Green Dots for testing. 
+Use Green Dots for testing.
 
 ## Some camping stuff
 I'm rewriting Camping's core as I build this out, basically to match what we decide on.
 
-A note on that: I thought that Camping might be mildly difficult to match some of Roda's succinct syntax for routing and filter type functions, but I was wrong. Camping can do it really well. 
+A note on that: I thought that Camping might be mildly difficult to match some of Roda's succinct syntax for routing and filter type functions, but I was wrong. Camping can do it really well.
 
 ## Problem with Namespacing:
 What has a suffix and what doesn't? In Camping a class is a route, it then implements one of the http methods to respond to a request. Routes can be derived from the name of the Controller: `EditPage` would match `/edit/page`. Additionally you could pile routes into a class and match all requests to that single class: ` class EditPage < R '/silliness', 'another/silly/route'`.

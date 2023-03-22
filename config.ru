@@ -7,8 +7,16 @@ require 'erb'
 
 # require_relative 'basic'
 
+# this is our test stuff:
+require_relative 'camping-rewrite' # The camping code.
+require_relative 'camp' # MY App Code
+
+# Start the server the way you ought to.
+# run Camping::Server
+
 # Runs the server
-run Glamp::Server
-ARGV.clear
-IRB.start
-exit
+# run Camping::Server.new
+# ARGV.clear
+# Uncomment the below if you want to run a console
+# IRB.start
+# exit
